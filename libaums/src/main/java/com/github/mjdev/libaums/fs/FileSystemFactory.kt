@@ -17,6 +17,7 @@
 
 package com.github.mjdev.libaums.fs
 
+import android.util.Log
 import com.github.mjdev.libaums.driver.BlockDeviceDriver
 import com.github.mjdev.libaums.fs.fat32.Fat32FileSystemCreator
 import com.github.mjdev.libaums.partition.PartitionTableEntry
@@ -51,10 +52,18 @@ object FileSystemFactory {
     @Throws(IOException::class, FileSystemFactory.UnsupportedFileSystemException::class)
     fun createFileSystem(entry: PartitionTableEntry,
                          blockDevice: BlockDeviceDriver): FileSystem {
+        Log.w("usb","fileSystems size:"+ fileSystems.size)
+        /*for (fileSystem in fileSystems) {
+            Log.w("usb","fileSystem:"+ fileSystem.toString())
+        }*/
+
         for (creator in fileSystems) {
             val fs = creator.read(entry, blockDevice)
             if (fs != null) {
+                Log.e("usb","fileSystem is :"+ creator.toString())
                 return fs
+            }else{
+                Log.w("usb","not fit fs:"+creator.toString())
             }
         }
 

@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED == action) {
                 val device = intent.getParcelableExtra<Parcelable>(UsbManager.EXTRA_DEVICE) as UsbDevice?
-                Log.d(TAG, "USB device attached")
+                Log.w(TAG, "USB device attached")
 
                 // determine if connected device is a mass storage devuce
                 if (device != null) {
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
                 val device = intent.getParcelableExtra<Parcelable>(UsbManager.EXTRA_DEVICE) as UsbDevice?
-                Log.d(TAG, "USB device detached")
+                Log.w(TAG, "USB device detached")
 
                 // determine if connected device is a mass storage devuce
                 if (device != null) {
@@ -229,7 +229,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                 val bytes = ByteArray(currentFs.chunkSize)
                 var count: Int
                 var total: Long = 0
-                Log.d(TAG, "Copy file with length: " + param!!.from!!.length)
+                Log.w(TAG, "Copy file with length: " + param!!.from!!.length)
                 while (inputStream.read(bytes).also { count = it } != -1) {
                     out.write(bytes, 0, count)
                     total += count.toLong()
@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             } catch (e: IOException) {
                 Log.e(TAG, "error copying!", e)
             }
-            Log.d(TAG, "copy time: " + (System.currentTimeMillis() - time))
+            Log.w(TAG, "copy time: " + (System.currentTimeMillis() - time))
             return null
         }
 
@@ -320,12 +320,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                             // TODO: query created and modified times to write it USB
                             name = getString(
                                     getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                            Log.i(TAG, "Display Name: $name")
+                            Log.e(TAG, "Display Name: $name")
                             val sizeIndex = getColumnIndex(OpenableColumns.SIZE)
                             if (!isNull(sizeIndex)) {
                                 size = getLong(sizeIndex)
                             }
-                            Log.i(TAG, "Size: $size")
+                            Log.e(TAG, "Size: $size")
                         }
                     }
                     ?.close()
@@ -367,12 +367,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             } catch (e: IOException) {
                 Log.e(TAG, "error copying!", e)
             }
-            Log.d(TAG, "copy time: " + (System.currentTimeMillis() - time))
+            Log.w(TAG, "copy time: " + (System.currentTimeMillis() - time))
             return null
         }
 
         override fun onPostExecute(result: Void?) {
-            dialog.dismiss()
+           dialog.dismiss()
             try {
                 adapter.refresh()
             } catch (e: IOException) {
@@ -415,7 +415,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         @Throws(IOException::class)
         private fun copyDir(dir: DocumentFile?, currentUsbDir: UsbFile) {
             for (file in dir!!.listFiles()) {
-                Log.d(TAG, "Found file " + file.name + " with size " + file.length())
+                Log.w(TAG, "Found file " + file.name + " with size " + file.length())
                 if (file.isDirectory) {
                     copyDir(file, currentUsbDir.createDirectory(file.name!!))
                 } else {
@@ -461,7 +461,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             } catch (e: IOException) {
                 Log.e(TAG, "could not copy directory", e)
             }
-            Log.d(TAG, "copy time: " + (System.currentTimeMillis() - time))
+            Log.w(TAG, "copy time: " + (System.currentTimeMillis() - time))
             return null
         }
 
@@ -488,13 +488,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
     private var serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            Log.d(TAG, "on service connected $name")
+            Log.w(TAG, "on service connected $name")
             val binder = service as ServiceBinder
             serverService = binder.service
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            Log.d(TAG, "on service disconnected $name")
+            Log.w(TAG, "on service disconnected $name")
             serverService = null
         }
     }
@@ -590,7 +590,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         currentDevice = 0
         val usbDevice = intent.getParcelableExtra<Parcelable>(UsbManager.EXTRA_DEVICE) as UsbDevice?
         if (usbDevice != null && usbManager.hasPermission(usbDevice)) {
-            Log.d(TAG, "received usb device via intent")
+            Log.w(TAG, "received usb device via intent")
             // requesting permission is not needed in this case
             setupDevice()
         } else {
@@ -608,23 +608,32 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         try {
             massStorageDevices[currentDevice].init()
 
+
             // we always use the first partition of the device
             currentFs = massStorageDevices[currentDevice].partitions[0].fileSystem.also {
-                Log.d(TAG, "Capacity: " + it.capacity)
-                Log.d(TAG, "Occupied Space: " + it.occupiedSpace)
-                Log.d(TAG, "Free Space: " + it.freeSpace)
-                Log.d(TAG, "Chunk size: " + it.chunkSize)
+                Log.w(TAG, "Capacity: " + it.capacity)
+                Log.w(TAG, "Occupied Space: " + it.occupiedSpace)
+                Log.w(TAG, "Free Space: " + it.freeSpace)
+                Log.w(TAG, "Chunk size: " + it.chunkSize)
             }
 
             val root = currentFs.rootDirectory
             val actionBar = supportActionBar
             actionBar!!.title = currentFs.volumeLabel
-            listView.adapter = UsbFileListAdapter(this, root).apply { adapter = this }
+           // listView.adapter = UsbFileListAdapter(this, root).apply { adapter = this }
 
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.e(TAG, "error setting up device", e)
         }
     }
+
+
+
+    
+    
+    
+    
+    
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -668,7 +677,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             R.id.open_storage_provider -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     if (currentDevice != -1) {
-                        Log.d(TAG, "Closing device first")
+                        Log.w(TAG, "Closing device first")
                         massStorageDevices[currentDevice].close()
                     }
                     val intent = Intent()
@@ -800,13 +809,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     }
 
     private fun startHttpServer(file: UsbFile?) {
-        Log.d(TAG, "starting HTTP server")
+        Log.w(TAG, "starting HTTP server")
         if (serverService == null) {
             Toast.makeText(this@MainActivity, "serverService == null!", Toast.LENGTH_LONG).show()
             return
         }
         if (serverService!!.isServerRunning) {
-            Log.d(TAG, "Stopping existing server service")
+            Log.w(TAG, "Stopping existing server service")
             serverService!!.stopServer()
         }
 
@@ -855,7 +864,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             return
         }
 
-        Log.i(TAG, "Uri: " + intent.data.toString())
+        Log.e(TAG, "Uri: " + intent.data.toString())
         val newIntent = Intent(Intent.ACTION_VIEW).apply { data = intent.data }
         val params = CopyToUsbTaskParam().apply { from = intent.data }
 
@@ -927,10 +936,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         super.onDestroy()
         unregisterReceiver(usbReceiver)
         if (!serverService!!.isServerRunning) {
-            Log.d(TAG, "Stopping service")
+            Log.w(TAG, "Stopping service")
             stopService(serviceIntent)
             if (currentDevice != -1) {
-                Log.d(TAG, "Closing device")
+                Log.w(TAG, "Closing device")
                 massStorageDevices[currentDevice].close()
             }
         }

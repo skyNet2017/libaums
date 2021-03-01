@@ -31,7 +31,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name="com.github.mjdev.libaums.usbfileman.MainActivity"
+            android:name="com.github.mjdev.libaums.usbfileman.MainActivity2"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>

@@ -48,8 +48,10 @@ public class FileSystemWrapper implements FileSystem {
     public long getCapacity() {
         try {
             return wrappedFs.getTotalSpace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "error getting capacity", e);
+
+            //0
             return 0;
         }
     }

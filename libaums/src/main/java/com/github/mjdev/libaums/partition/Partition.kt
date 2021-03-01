@@ -85,6 +85,7 @@ class Partition(blockDevice: BlockDeviceDriver, entry: PartitionTableEntry) : By
                 partition.fileSystem = fs
                 partition
             } catch (e: FileSystemFactory.UnsupportedFileSystemException) {
+                e.printStackTrace()
                 Log.w(TAG, "Unsupported fs on partition")
                 null
             }

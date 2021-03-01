@@ -66,16 +66,35 @@ public class JavaFsFileSystemCreator implements FileSystemCreator {
         blockDevice.read(0, buffer);
 
         FSBlockDeviceWrapper wrapper = new FSBlockDeviceWrapper(blockDevice, entry);
+        Log.e(TAG, "fsTypes  " + fsTypes.size());
 
-        for(FileSystemType type : fsTypes) {
-            if(type.supports(wrapper.getPartitionTableEntry(), buffer.array(), wrapper)) {
-                try {
-                    return new FileSystemWrapper(type.create(new DeviceWrapper(blockDevice, entry), false));
-                } catch (FileSystemException e) {
-                    Log.e(TAG, "error creating fs with type " + type.getName(), e);
-                }
-            }
+        try {
+            FileSystem fileSystem = new FileSystemWrapper(new NTFSFileSystemType().create(new DeviceWrapper(blockDevice, entry), true));
+            Log.e(TAG, "fs is the type  NTFSFileSystemType" );
+            return fileSystem;
+        } catch (FileSystemException e) {
+            e.printStackTrace();
         }
+        /*for (FileSystemType type : fsTypes) {
+            try {
+                byte[] bytes = buffer.array();
+                Log.e(TAG, "bytes:" + new String(bytes, "utf-8"));
+                boolean support = type.supports(wrapper.getPartitionTableEntry(), bytes, wrapper);
+
+                if (support) {
+
+                    FileSystem fileSystem = new FileSystemWrapper(type.create(new DeviceWrapper(blockDevice, entry), false));
+                    Log.e(TAG, "fs is the type " + type.getName());
+                    return fileSystem;
+
+                } else {
+                    Log.e(TAG, "fs not the type " + type.getName());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "error creating fs with type " + type.getName());
+                e.printStackTrace();
+            }
+        }*/
 
         return null;
     }

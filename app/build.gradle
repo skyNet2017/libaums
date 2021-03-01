@@ -25,6 +25,9 @@ android {
     }
 }
 
+def spider_man = "1.1.7"
+def spider_man_no_op = "1.1.5"
+
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'junit:junit:4.12'
@@ -39,4 +42,8 @@ dependencies {
 
     implementation 'me.jahnen:libaums-httpserver:0.5.3'
     implementation 'me.jahnen:libaums-storageprovider:0.5.1'
+    implementation 'com.hjq:logcat:9.5'
+
+    debugImplementation "com.simple:spiderman:$spider_man"
+    releaseImplementation "com.simple:spiderman-no-op:$spider_man_no_op"
 }
