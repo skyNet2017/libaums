@@ -31,8 +31,12 @@ dependencies {
     api 'androidx.appcompat:appcompat:1.0.0-beta01'
     api 'com.google.android.material:material:1.0.0-beta01'
     api project(':libaums')
-    api project(':httpserver')
-    api project(':storageprovider')
+    //api project(':httpserver')
+    //api project(':storageprovider')
     api project(':javafs')
-    api project(':libusbcommunication')
+    //api project(':libusbcommunication')
+    implementation 'me.jahnen:libaums-libusbcommunication:0.2'
+
+    implementation 'me.jahnen:libaums-httpserver:0.5.3'
+    implementation 'me.jahnen:libaums-storageprovider:0.5.1'
 }

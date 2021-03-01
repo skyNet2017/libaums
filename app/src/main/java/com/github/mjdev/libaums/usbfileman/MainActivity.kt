@@ -812,7 +812,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
         // now start the server
         try {
-            serverService!!.startServer(file!!, AsyncHttpServer(8000))
+            serverService!!.startServer(file = file!!, server = AsyncHttpServer(8000))
             Toast.makeText(this@MainActivity, "HTTP server up and running", Toast.LENGTH_LONG).show()
         } catch (e: IOException) {
             Log.e(TAG, "Error starting HTTP server", e)
